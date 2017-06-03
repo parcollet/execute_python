@@ -1,0 +1,51 @@
+WARNING: just a temporary development for the TRIQS project, not intended for distribution.
+
+Goal
+----
+
+A demo code to call Python from a C (or Fortran code).
+
+- execute_py.h, execute_py.c : 
+  the function to open a new interpreter, run a script in it and close it
+
+- main.c : a small demo code, which : 
+   
+   - opens mpi in C, does a basic operation with it
+   - call Python, which itself launch mpi4py and use it a bit
+   - redo some mpi after the Python is finalized, to check mpi is not affected.
+
+- test.py : the python script for the test
+
+NB : one can also split the function in 3 functions (init, run, finalize) 
+to keep the interpreter alive between calls. Is it useful ?
+
+- to use it form fortran, call the execute_py with 2 strings...
+  (todo)
+
+Compilation
+------------
+
+- This is a C code (not C++), you need to compile with a C compiler.
+  (to have a mangling compatible with fortran).
+
+- You need to link to dl (for dlopen), and mpi (for the test)
+
+- Compilation instructions.
+
+ * OS X : 
+   clang execute_py.c main.c  -ldl  -lmpi
+ 
+
+Run
+----
+
+./a.out requires two arguments:
+
+ - the location of the Python shared library (.so on Linux, .dylib on OS X).
+ - the name of the script
+
+e.g.
+
+mpirun -np 4 ./a.out PATH/libpython2.7.dylib test.py 
+
+
