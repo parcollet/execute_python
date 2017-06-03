@@ -46,6 +46,19 @@ Run
 
 e.g.
 
-mpirun -np 4 ./a.out PATH/libpython2.7.dylib test.py 
+kondo:~/execute_python (master)$ mpirun -np 4 ./a.out /usr/local/install/python-2.7.5/lib/libpython2.7.so ./test.py 
+Hello world! I'm process 0 out of 4 processes
+Hello world! I'm process 1 out of 4 processes
+Hello world! I'm process 2 out of 4 processes
+Hello world! I'm process 3 out of 4 processes
+Python I am node  2
+Python I am node  3
+Python I am node  0
+Python I am node  1
+Hello again ! I'm process 1 out of 4 processes
+Hello again ! I'm process 3 out of 4 processes
+Hello again ! I'm process 0 out of 4 processes
+Hello again ! I'm process 2 out of 4 processes
+
 
 
