@@ -1,9 +1,8 @@
 
-// starts the interpreter
-int init_python_interpreter(const char* python_so);
 
-// executes code in the Interpreter
-int execute_python_file(const char* filename);
-
-// call only ONCE at the very end !
-int close_python_interpreter(); 
+// Launch the intepreter, runs filename into it and close it
+// 
+// python_so : location of libpython.xx.so or libpython.xx.dylib on OS X
+// filename : script to be run in the interpreter
+//
+int execute_python_file(const char *python_so, const char *filename);

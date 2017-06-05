@@ -9,41 +9,31 @@
 #define AS_STRING2(X) #X
 
 // loads the function F from the shared lib
-#define LOAD(F, R, ...)                                                                                                \
- R (*F)(__VA_ARGS__);                                                                                                  \
- *(void**)(&F) = dlsym(libpython_handle, AS_STRING(F));                                                                \
- if ((error = dlerror()) != NULL) {                                                                                    \
-  fprintf(stderr, "%s\n", error);                                                                                      \
-  return 1;                                                                                                            \
+#define LOAD(F, R, ...)                                                        \
+ R (*F)(__VA_ARGS__);                                                          \
+ *(void**)(&F) = dlsym(handle, AS_STRING(F));                                  \
+ if ((error = dlerror()) != NULL) {                                            \
+  fprintf(stderr, "%s\n", error);                                              \
+  return 1;                                                                    \
  }
 
-static void* libpython_handle = NULL;
-
-//---------------------------------
-
-int init_python_interpreter(const char* python_so) {
+int execute_python_file(const char* python_so, const char* filename) {
+ static void* handle = NULL; // will be not NULL iif Python already runs
  char* error;
- libpython_handle = dlopen(python_so, RTLD_GLOBAL | RTLD_LAZY);
- if (!libpython_handle) {
-  fprintf(stderr, "Can not find Python !\n%s\n", dlerror());
-  return 1;
- }
- dlerror();                   // Clear any existing error
- LOAD(Py_Initialize, void, ); // loads the functions that we will need
- (*Py_Initialize)();          // initialize the interpreter
- return 0;
-}
 
-//---------------------------------
-
-int execute_python_file(const char* filename) {
- char* error;
- if (!libpython_handle) {
-  fprintf(stderr, "Python is not initialized. You forget to call init_python_interpreter !\n");
-  return 1;
+ // opens the python shared lib and init the interpreter
+ if (!handle) {
+  handle = dlopen(python_so, RTLD_GLOBAL | RTLD_LAZY);
+  if (!handle) {
+   fprintf(stderr, "Can not find Python !\n%s\n", dlerror());
+   return 1;
+  }
+  dlerror();                   // Clear any existing error
+  LOAD(Py_Initialize, void, ); // loads the functions that we will need
+  (*Py_Initialize)();          // initialize the interpreter
  }
 
- // check Python is running
+ // check Python is running if handle is not NULL
  LOAD(Py_IsInitialized, int, );
  if (!(*Py_IsInitialized)()) {
   fprintf(stderr, "Python Interpreter failed to initialize");
@@ -60,20 +50,13 @@ int execute_python_file(const char* filename) {
  LOAD(PyRun_SimpleFile, int, FILE*, const char*);
  (*PyRun_SimpleFile)(file, filename);
 
- return 0;
-}
-
-//---------------------------------
-
-int close_python_interpreter() {
- char* error;
-
+ // We never close the interpreter nor the handle
  // close the interpreter
- LOAD(Py_Finalize, void, );
- (*Py_Finalize)();
-
+ // LOAD(Py_Finalize, void, );
+ // (*Py_Finalize)();
+ // Never close !
  // close the shared lib
- dlclose(libpython_handle);
+ // dlclose(handle);
 
  return 0;
 }
