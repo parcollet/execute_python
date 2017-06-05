@@ -24,11 +24,13 @@ int main(int argc, char** argv) {
  printf("Hello world! I'm process %i out of %i processes\n", my_id, num_procs);
 
  // launch python
- execute_python_file(argv[1], argv[2]);
+ init_python_interpreter(argv[1]);
+ 
+ execute_python_file(argv[2]);
 
  printf("Between 2 calls from C :  I'm process %i out of %i processes\n", my_id, num_procs);
 
- execute_python_file(argv[1], argv[2]);
+ execute_python_file(argv[2]);
 
  // check it has not been finalized
  int final;
@@ -46,5 +48,6 @@ int main(int argc, char** argv) {
  ierr = MPI_Comm_size(MPI_COMM_WORLD, &num_procs);
  printf("Hello again ! I'm process %i out of %i processes\n", my_id, num_procs);
 
+ close_python_interpreter();
  MPI_Finalize();
 }

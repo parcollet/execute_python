@@ -24,7 +24,7 @@ BreakBeforeTernaryOperators: false
 BreakConstructorInitializersBeforeComma: true
 BreakStringLiterals: false
 
-ColumnLimit: 80
+ColumnLimit: 120
 ConstructorInitializerAllOnOneLineOrOnePerLine: true
 ConstructorInitializerIndentWidth: 3
 #ContinuationIndentWidth: 3
