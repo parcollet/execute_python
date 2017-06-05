@@ -26,6 +26,10 @@ int main(int argc, char** argv) {
  // launch python
  execute_python_file(argv[1], argv[2]);
 
+ printf("Between 2 calls from C :  I'm process %i out of %i processes\n", my_id, num_procs);
+
+ execute_python_file(argv[1], argv[2]);
+
  // check it has not been finalized
  int final;
  MPI_Finalized(&final);
