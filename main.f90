@@ -9,12 +9,24 @@ implicit none
 include 'mpif.h'
 
 interface
-   function execute_python_file(python_so, python_script) bind(C)
+
+   function init_python_interpreter(python_so) bind(C)
+      use iso_c_binding, only: c_int, c_char
+      integer(c_int) :: init_python_interpreter !< Return value
+      character(kind=c_char), intent(in) :: python_so(*) !< Python lib path
+   end function
+
+   function execute_python_file(python_script) bind(C)
       use iso_c_binding, only: c_int, c_char
       integer(c_int) :: execute_python_file !< Return value
-      character(kind=c_char), intent(in) :: python_so(*) !< Python lib path
       character(kind=c_char), intent(in) :: python_script(*) !< Python script name
    end function
+
+   function close_python_interpreter() bind(C)
+      use iso_c_binding, only: c_int, c_char
+      integer(c_int) :: close_python_interpreter !< Return value
+   end function
+
 end interface
 
 !
@@ -46,7 +58,26 @@ endif
 
 print *, "  I am rank ", mrank, "  out of ", msize
 
-ierr = execute_python_file(f2c_string(python_so), f2c_string(python_script))
+!launch python
+ierr = init_python_interpreter(f2c_string(python_so))
+
+!execute script
+ierr = execute_python_file(f2c_string(python_script))
+
+call mpi_barrier(MPI_COMM_WORLD,ierr)
+
+!in between calls
+print *, "  Call between: I am rank ", mrank, "  out of ", msize
+
+call mpi_barrier(MPI_COMM_WORLD,ierr)
+
+!execute script again
+ierr = execute_python_file(f2c_string(python_script))
+
+call mpi_barrier(MPI_COMM_WORLD,ierr)
+
+!close python
+ierr = close_python_interpreter()
 
 call mpi_finalize(ierr)
 
