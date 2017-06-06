@@ -16,6 +16,12 @@ interface
       character(kind=c_char), intent(in) :: python_so(*) !< Python lib path
    end function
 
+   function init_python_interpreter_from_env(env_python_so) bind(C)
+      use iso_c_binding, only: c_int, c_char
+      integer(c_int) :: init_python_interpreter_from_env !< Return value
+      character(kind=c_char), intent(in) :: env_python_so(*) !< Environment variable containing Python lib path
+   end function
+
    function execute_python_file(python_script) bind(C)
       use iso_c_binding, only: c_int, c_char
       integer(c_int) :: execute_python_file !< Return value
@@ -59,7 +65,8 @@ endif
 print *, "  I am rank ", mrank, "  out of ", msize
 
 !launch python
-ierr = init_python_interpreter(f2c_string(python_so))
+!ierr = init_python_interpreter(f2c_string(python_so))
+ierr = init_python_interpreter_from_env(f2c_string(python_so))
 
 !execute script
 ierr = execute_python_file(f2c_string(python_script))

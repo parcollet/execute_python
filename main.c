@@ -24,7 +24,8 @@ int main(int argc, char** argv) {
  printf("Hello world! I'm process %i out of %i processes\n", my_id, num_procs);
 
  // launch python
- init_python_interpreter(argv[1]);
+// init_python_interpreter(argv[1]);
+ init_python_interpreter_from_env(argv[1]);
  
  execute_python_file(argv[2]);
 
