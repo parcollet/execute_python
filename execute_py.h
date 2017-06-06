@@ -1,5 +1,9 @@
 
 // starts the interpreter
+// the location of the PythonLibrary must be in the variable env_var
+int init_python_interpreter_from_env(const char* env_var);
+
+// starts the interpreter
 int init_python_interpreter(const char* python_so);
 
 // executes code in the Interpreter

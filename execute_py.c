@@ -38,19 +38,12 @@ int init_python_interpreter(const char* python_so) {
 //---------------------------------
 
 int init_python_interpreter_from_env(const char* env_var) {
- char* error;
- char* python_so;
-
- python_so = getenv(env_var);
- libpython_handle = dlopen(python_so, RTLD_GLOBAL | RTLD_LAZY);
- if (!libpython_handle) {
-  fprintf(stderr, "Can not find Python !\n%s\n", dlerror());
+ char *python_so = getenv(env_var);
+ if (!python_so) {
+  fprintf(stderr, "Can not find the environment variable %s\n", env_var);
   return 1;
  }
- dlerror();                   // Clear any existing error
- LOAD(Py_Initialize, void, ); // loads the functions that we will need
- (*Py_Initialize)();          // initialize the interpreter
- return 0;
+ return init_python_interpreter(python_so);
 }
 
 //---------------------------------
