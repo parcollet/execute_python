@@ -41,7 +41,7 @@ Run
 
 ./a.out requires two arguments:
 
- - the location of the Python shared library (.so on Linux, .dylib on OS X).
+ - the name of the environment variable containing location of the Python shared library (.so on Linux, .dylib on OS X).
  - the name of the script
 
 e.g.
