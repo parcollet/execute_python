@@ -19,8 +19,8 @@ A demo code to call Python from a C (or Fortran code).
 NB : one can also split the function in 3 functions (init, run, finalize) 
 to keep the interpreter alive between calls. Is it useful ?
 
-- to use it form fortran, call the execute_py with 2 strings...
-  (todo)
+- main.f90 : the same demo code for Fortran90
+   
 
 Compilation
 ------------
@@ -34,10 +34,16 @@ Compilation
 
  * OS X : 
    clang execute_py.c main.c  -ldl  -lmpi
+
+ * F90 demo :
+   mpif90 -ldl main.f90 execute_py.o
  
 
 Run
 ----
+
+if using the enivronmental variable, you have to set it first to the path to the python lib, e.g.
+aichhorn@faepop60:~/TRIQS1.x/EXECUTE_PYTHON$ export PYTHONLIB=/usr/lib/python2.7/config-x86_64-linux-gnu/libpython2.7.so
 
 ./a.out requires two arguments:
 
@@ -46,19 +52,18 @@ Run
 
 e.g.
 
-kondo:~/execute_python (master)$ mpirun -np 4 ./a.out /usr/local/install/python-2.7.5/lib/libpython2.7.so ./test.py 
-Hello world! I'm process 0 out of 4 processes
-Hello world! I'm process 1 out of 4 processes
-Hello world! I'm process 2 out of 4 processes
-Hello world! I'm process 3 out of 4 processes
-Python I am node  2
-Python I am node  3
+aichhorn@faepop60:~/TRIQS1.x/EXECUTE_PYTHON$ mpirun -np 2 ./a.out PYTHONLIB ./test.py 
+   Python lib: PYTHONLIB
+   Python script: ./test.py
+   I am rank            0   out of            2
+   I am rank            1   out of            2
 Python I am node  0
 Python I am node  1
-Hello again ! I'm process 1 out of 4 processes
-Hello again ! I'm process 3 out of 4 processes
-Hello again ! I'm process 0 out of 4 processes
-Hello again ! I'm process 2 out of 4 processes
+   Call between: I am rank            0   out of            2
+   Call between: I am rank            1   out of            2
+Python I am node  0
+Python I am node  1
+
 
 
 
